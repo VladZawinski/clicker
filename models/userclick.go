@@ -7,11 +7,11 @@ import (
 )
 
 type UserClicks struct {
-	gorm.Model
 	UserID    uint `gorm:"not null"`
 	PostID    uint `gorm:"not null"`
 	Ip        *string
 	User      User `gorm:"foreignKey:UserID"`
 	Post      Post `gorm:"foreignKey:PostID"`
 	ClickedAt time.Time
+	gorm.Model
 }

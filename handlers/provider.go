@@ -35,4 +35,5 @@ func postRoutes(router fiber.Router, service *services.ClickerService) {
 	poH := NewPostHandler(*service)
 	post.Get("/", poH.GetAllPost)
 	post.Get("/:id", poH.GetPostById)
+	post.Post("/markAsClicked", poH.MarkAsClicked)
 }

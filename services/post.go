@@ -11,7 +11,7 @@ type PostService interface {
 	UpdatePost(post *models.Post) error
 	DeletePost(id uint) error
 	GetAllPosts() ([]models.Post, error)
-	GetPostByID(id uint) (*models.Post, error)
+	GetPostByID(id int) (*models.Post, error)
 }
 
 func NewPostService(db *gorm.DB) PostService {
@@ -45,7 +45,7 @@ func (s *postService) GetAllPosts() ([]models.Post, error) {
 	return posts, nil
 }
 
-func (s *postService) GetPostByID(id uint) (*models.Post, error) {
+func (s *postService) GetPostByID(id int) (*models.Post, error) {
 	var post models.Post
 	err := s.db.First(&post, id).Error
 	if err != nil {

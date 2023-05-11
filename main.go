@@ -1,18 +1,22 @@
 package main
 
 import (
+	"clicker/handlers"
 	"clicker/models"
 	"clicker/services"
-	"fmt"
 
+	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func main() {
 	db := createDb()
+	app := fiber.New()
+	// seeder.SeedPredefinedData(db)
 	clickerService := services.NewClickerService(db)
-	fmt.Println(clickerService)
+	handlers.SetUpHandlers(app, &clickerService)
+	app.Listen(":3000")
 }
 
 func createDb() *gorm.DB {

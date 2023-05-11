@@ -25,7 +25,8 @@ func (h AuthHandler) Login(c *fiber.Ctx) error {
 	if err := c.BodyParser(body); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Fields are required")
 	}
-	u, _ := h.service.User.FindUserByPhone(body.Phone)
+	u, err := h.service.User.FindUserByPhone(body.Phone)
+	fmt.Println(err)
 	if u == nil {
 		return fiber.NewError(fiber.StatusForbidden)
 	}
@@ -53,16 +54,15 @@ func (h AuthHandler) Register(c *fiber.Ctx) error {
 	if err := c.BodyParser(body); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Fields are required")
 	}
-	existing, _ := h.service.User.FindUserByPhone(body.Phone)
-	if existing != nil {
+	user, err := h.service.User.FindUserByPhone(body.Phone)
+	if err != nil && user != nil {
 		return fiber.NewError(fiber.StatusConflict)
 	}
 	h.service.User.RegisterUser(&models.User{
-		Name:         body.Name,
-		Phone:        body.Password,
-		Password:     body.Password,
-		Role:         middlewares.UserRole,
-		ClickedCount: 0,
+		Name:     body.Name,
+		Phone:    body.Phone,
+		Password: body.Password,
+		Role:     middlewares.UserRole,
 	})
 	return c.SendStatus(fiber.StatusCreated)
 }
