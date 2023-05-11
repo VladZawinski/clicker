@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"clicker/middlewares"
 	"clicker/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,5 +36,6 @@ func postRoutes(router fiber.Router, service *services.ClickerService) {
 	poH := NewPostHandler(*service)
 	post.Get("/", poH.GetAllPost)
 	post.Get("/:id", poH.GetPostById)
+	post.Use(middlewares.JwtGuard())
 	post.Post("/markAsClicked", poH.MarkAsClicked)
 }

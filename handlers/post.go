@@ -25,11 +25,11 @@ func (h *PostHandler) GetAllPost(c *fiber.Ctx) error {
 }
 
 func (h *PostHandler) GetPostById(c *fiber.Ctx) error {
-	param := c.Params("name")
+	param := c.Params("id")
 	id, _ := strconv.Atoi(param)
 	result, err := h.service.Post.GetPostByID(id)
 	if err != nil {
-		return err
+		return fiber.NewError(fiber.StatusNotFound)
 	}
 	return c.JSON(mapper.MapPostToDto(result))
 }
