@@ -2,6 +2,7 @@ package main
 
 import (
 	"clicker/models"
+	"clicker/services"
 	"fmt"
 
 	"gorm.io/driver/sqlite"
@@ -9,13 +10,16 @@ import (
 )
 
 func main() {
+	db := createDb()
+	clickerService := services.NewClickerService(db)
+	fmt.Println(clickerService)
+}
+
+func createDb() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("clicker.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&models.User{})
-	db.Create(&models.User{Name: "Thiha", Phone: "09993434135"})
-	var user models.User
-	db.First(&user)
-	fmt.Println(user)
+	db.AutoMigrate(&models.User{}, &models.Post{}, &models.UserClicks{})
+	return db
 }

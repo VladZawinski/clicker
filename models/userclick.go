@@ -1,10 +1,17 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type UserClicks struct {
 	gorm.Model
-	UserID uint
-	PostID uint
-	Count  uint
+	UserID    uint `gorm:"not null"`
+	PostID    uint `gorm:"not null"`
+	Ip        *string
+	User      User `gorm:"foreignKey:UserID"`
+	Post      Post `gorm:"foreignKey:PostID"`
+	ClickedAt time.Time
 }
