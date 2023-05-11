@@ -1,21 +1,29 @@
 package main
 
 import (
+	"clicker/handlers"
 	"clicker/models"
-	"fmt"
+	"clicker/services"
 
+	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func main() {
+	db := createDb()
+	app := fiber.New()
+	// seeder.SeedPredefinedData(db)
+	clickerService := services.NewClickerService(db)
+	handlers.SetUpHandlers(app, &clickerService)
+	app.Listen(":3000")
+}
+
+func createDb() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("clicker.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&models.User{})
-	db.Create(&models.User{Name: "Thiha", Phone: "09993434135"})
-	var user models.User
-	db.First(&user)
-	fmt.Println(user)
+	db.AutoMigrate(&models.User{}, &models.Post{}, &models.UserClicks{})
+	return db
 }

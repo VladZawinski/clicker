@@ -8,5 +8,8 @@ type ClickerService struct {
 }
 
 func NewClickerService(db *gorm.DB) ClickerService {
-	return ClickerService{}
+	return ClickerService{
+		Post: NewPostService(db),
+		User: NewUserService(db),
+	}
 }
