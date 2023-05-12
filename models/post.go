@@ -11,3 +11,8 @@ type Post struct {
 	UserClicks  []UserClicks `gorm:"foreignKey:PostID"`
 	gorm.Model
 }
+
+type PostWithCount struct {
+	Post
+	UserClicksCount int
+}

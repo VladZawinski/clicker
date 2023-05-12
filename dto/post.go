@@ -10,6 +10,7 @@ type Post struct {
 	ImageUrl    string    `json:"imageUrl"`
 	ContentType string    `json:"contentType"`
 	CreateAt    time.Time `json:"createdAt"`
+	ClickCount  int       `json:"clickedCount"`
 }
 
 type CreatePost struct {

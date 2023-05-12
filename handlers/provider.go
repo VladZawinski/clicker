@@ -32,7 +32,7 @@ func portalRoutes(router fiber.Router, service *services.ClickerService) {
 	portal.Post("posts", ph.CreatePost)
 	portal.Delete("posts/:id", ph.DeletePost)
 	portal.Get("posts/:id", ph.FindPostDetail)
-
+	portal.Get("getClicksByPost/:id", ph.GetClickedUsersByPost)
 }
 
 func postRoutes(router fiber.Router, service *services.ClickerService) {

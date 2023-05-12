@@ -106,3 +106,12 @@ func (h *PortalHandler) GetAllUserClicks(c *fiber.Ctx) error {
 	}
 	return c.JSON(result)
 }
+
+func (h *PortalHandler) GetClickedUsersByPost(c *fiber.Ctx) error {
+	id, _ := middlewares.ParseIdParam(c)
+	result, err := h.service.Post.GetClickedUsersById(id)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+	return c.JSON(result)
+}

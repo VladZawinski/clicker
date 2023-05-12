@@ -4,6 +4,7 @@ import (
 	"clicker/mapper"
 	"clicker/middlewares"
 	"clicker/services"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,9 +20,10 @@ func NewPostHandler(s services.ClickerService) PostHandler {
 func (h *PostHandler) GetAllPost(c *fiber.Ctx) error {
 	result, err := h.service.Post.GetAllPosts()
 	if err != nil {
+		fmt.Println(err)
 		return fiber.NewError(fiber.ErrInternalServerError.Code, "Something went wrong")
 	}
-	return c.JSON(mapper.MapPostsToPostDtos(result))
+	return c.JSON(mapper.MapPostsWithCountToPostDtos(result))
 }
 
 func (h *PostHandler) GetPostById(c *fiber.Ctx) error {
