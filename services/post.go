@@ -1,6 +1,7 @@
 package services
 
 import (
+	"clicker/dto"
 	"clicker/models"
 	"time"
 
@@ -15,7 +16,7 @@ type PostService interface {
 	GetPostByID(id int) (*models.Post, error)
 	MarkPostAsClicked(userId int, id int) error
 	GetAllUserClicks() ([]models.UserClicks, error)
-	GetClickedUsersById(id int) ([]models.User, error)
+	GetClickedUsersById(id int) ([]dto.ClickedPostUser, error)
 }
 
 func NewPostService(db *gorm.DB) PostService {
@@ -90,15 +91,28 @@ func (s *postService) GetAllUserClicks() ([]models.UserClicks, error) {
 	return clicks, nil
 }
 
-func (s *postService) GetClickedUsersById(id int) ([]models.User, error) {
+func (s *postService) GetClickedUsersById(id int) ([]dto.ClickedPostUser, error) {
 	var post models.Post
-	var users []models.User
+	var userCount []dto.ClickedPostUser
+	userClicksCount := make(map[uint]int)
 	err := s.db.Preload("UserClicks.User").Find(&post).Error
 	if err != nil {
 		return nil, err
 	}
 	for _, uc := range post.UserClicks {
-		users = append(users, uc.User)
+		userClicksCount[uc.UserID]++
 	}
-	return users, nil
+	userMap := make(map[uint]*models.User)
+	for _, uc := range post.UserClicks {
+		user := uc.User
+		if _, ok := userMap[user.ID]; !ok {
+			userMap[user.ID] = &user
+		}
+	}
+
+	for userID, user := range userMap {
+		count := userClicksCount[userID]
+		userCount = append(userCount, dto.ClickedPostUser{Id: int(user.ID), User: dto.User{Id: user.ID, Name: user.Name, Phone: user.Phone}, Count: count})
+	}
+	return userCount, nil
 }
