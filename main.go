@@ -3,6 +3,7 @@ package main
 import (
 	"clicker/handlers"
 	"clicker/models"
+	"clicker/seeder"
 	"clicker/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,7 +14,7 @@ import (
 func main() {
 	db := createDb()
 	app := fiber.New()
-	// seeder.SeedPredefinedData(db)
+	seeder.SeedPredefinedData(db)
 	clickerService := services.NewClickerService(db)
 	handlers.SetUpHandlers(app, &clickerService)
 	app.Listen(":3000")

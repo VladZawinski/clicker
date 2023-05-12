@@ -24,11 +24,15 @@ func authRoutes(router fiber.Router, service *services.ClickerService) {
 func portalRoutes(router fiber.Router, service *services.ClickerService) {
 	portal := router.Group("portal")
 	ph := NewPortalHandler(*service)
+	portal.Post("login", ph.Login)
+	portal.Use(middlewares.JwtGuard())
+	portal.Use(middlewares.RoleGuard(middlewares.AdminRole))
+	portal.Get("userClicks", ph.GetAllUserClicks)
 	portal.Get("findAllUser", ph.FindAllUser)
-	portal.Post("createPost", ph.CreatePost)
-	portal.Delete("deletePost", ph.DeletePost)
-	portal.Get("post/:id", ph.FindPostDetail)
-	portal.Get("login", ph.Login)
+	portal.Post("posts", ph.CreatePost)
+	portal.Delete("posts/:id", ph.DeletePost)
+	portal.Get("posts/:id", ph.FindPostDetail)
+
 }
 
 func postRoutes(router fiber.Router, service *services.ClickerService) {
@@ -37,5 +41,5 @@ func postRoutes(router fiber.Router, service *services.ClickerService) {
 	post.Get("/", poH.GetAllPost)
 	post.Get("/:id", poH.GetPostById)
 	post.Use(middlewares.JwtGuard())
-	post.Post("/markAsClicked", poH.MarkAsClicked)
+	post.Post("/markAsClicked/:id", poH.MarkAsClicked)
 }

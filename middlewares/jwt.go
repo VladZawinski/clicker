@@ -3,6 +3,7 @@ package middlewares
 import (
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func JwtGuard() func(*fiber.Ctx) error {
@@ -14,4 +15,11 @@ func JwtGuard() func(*fiber.Ctx) error {
 		},
 		SigningKey: []byte("secret"),
 	})
+}
+
+func ExtractUser(c *fiber.Ctx) (float64, error) {
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	id := claims["userId"].(float64)
+	return id, nil
 }

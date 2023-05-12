@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"clicker/mapper"
+	"clicker/middlewares"
 	"clicker/services"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -25,8 +25,7 @@ func (h *PostHandler) GetAllPost(c *fiber.Ctx) error {
 }
 
 func (h *PostHandler) GetPostById(c *fiber.Ctx) error {
-	param := c.Params("id")
-	id, _ := strconv.Atoi(param)
+	id, _ := middlewares.ParseIdParam(c)
 	result, err := h.service.Post.GetPostByID(id)
 	if err != nil {
 		return fiber.NewError(fiber.StatusNotFound)
@@ -35,5 +34,14 @@ func (h *PostHandler) GetPostById(c *fiber.Ctx) error {
 }
 
 func (h *PostHandler) MarkAsClicked(c *fiber.Ctx) error {
-	return nil
+	id, err := middlewares.ExtractUser(c)
+	postId, _ := middlewares.ParseIdParam(c)
+	if err != nil {
+		return err
+	}
+	errr := h.service.Post.MarkPostAsClicked(int(id), postId)
+	if errr != nil {
+		return err
+	}
+	return c.SendStatus(fiber.StatusOK)
 }

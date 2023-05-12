@@ -3,9 +3,12 @@ package mapper
 import (
 	"clicker/dto"
 	"clicker/models"
+	"fmt"
 )
 
 func MapPostToDto(p *models.Post) *dto.Post {
+	c := p.UserClicks
+	fmt.Println(c)
 	return &dto.Post{
 		Id:          p.ID,
 		Title:       p.Title,
